@@ -1,9 +1,53 @@
-.env
-*.env
-.env.local
-.env.production
-__pycache__/
+# Dependencies
 node_modules/
-*.pyc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+
+# Mac system files
 .DS_Store
-db.sqlite3.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+
+# Logs
+logs/
+*.log
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+
+# Misc
+*.zip
+*.tar.gz
