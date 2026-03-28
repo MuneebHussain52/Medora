@@ -43,3 +43,132 @@ exports.Logout = async (req, res) => {
     res.status(500).json({ message: "Error logging out", error });
   }
 };
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user profile", error });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user profile", error });
+  }
+};
+
+exports.followUser = async (req, res) => {
+  try {
+    const { userId } = req.params; // User to follow
+    const currentUserId = req.user._id; // Logged-in user
+
+    console.log("Follow request:", {
+      userId,
+      currentUserId: currentUserId.toString(),
+    });
+
+    if (userId === currentUserId.toString()) {
+      return res.status(400).json({ message: "You cannot follow yourself" });
+    }
+
+    const userToFollow = await User.findById(userId);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!userToFollow || !currentUser) {
+      console.log("User not found:", {
+        userToFollow: !!userToFollow,
+        currentUser: !!currentUser,
+      });
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Initialize arrays if they don't exist (for backward compatibility)
+    if (!Array.isArray(currentUser.following)) {
+      currentUser.following = [];
+    }
+    if (!Array.isArray(userToFollow.followers)) {
+      userToFollow.followers = [];
+    }
+    if (!Array.isArray(currentUser.followers)) {
+      currentUser.followers = [];
+    }
+    if (!Array.isArray(userToFollow.following)) {
+      userToFollow.following = [];
+    }
+
+    // Check if already following
+    const isFollowing = currentUser.following.some(
+      (id) => id.toString() === userId,
+    );
+    console.log("Is following:", isFollowing);
+
+    if (isFollowing) {
+      // Unfollow
+      currentUser.following = currentUser.following.filter(
+        (id) => id.toString() !== userId,
+      );
+      userToFollow.followers = userToFollow.followers.filter(
+        (id) => id.toString() !== currentUserId.toString(),
+      );
+    } else {
+      // Follow
+      currentUser.following.push(userId);
+      userToFollow.followers.push(currentUserId);
+    }
+
+    await currentUser.save();
+    await userToFollow.save();
+
+    console.log("Follow operation successful:", { following: !isFollowing });
+
+    res.status(200).json({
+      following: !isFollowing,
+      followersCount: userToFollow.followers.length,
+      followingCount: userToFollow.following.length,
+    });
+  } catch (error) {
+    console.error("Follow error:", error);
+    res
+      .status(500)
+      .json({
+        message: "Error following/unfollowing user",
+        error: error.message,
+      });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { name, bio, profilePic } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (bio !== undefined) user.bio = bio;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+
+    await user.save();
+
+    const updatedUser = await User.findById(userId).select("-password");
+    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Error updating profile", error: error.message });
+  }
+};

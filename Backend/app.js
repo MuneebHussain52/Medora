@@ -6,9 +6,9 @@ const cors = require("cors");
 const Postrouter = require("./routes/posts");
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-  })
+  }),
 );
 
 const port = 3000;

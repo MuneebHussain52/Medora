@@ -1,90 +1,73 @@
-# 📱 Mini Social Media Application (React)
+# 📱 Mini Social Media App
 
-A **Mini Social Media Web Application** built using **React.js and JavaScript**.  
-This project demonstrates modern frontend development concepts such as component-based architecture, state management, and dynamic UI updates.
+> A full-stack MERN social media web application with user authentication, post creation, likes, comments, follow system, and user profiles.
 
 ---
 
-## 🧑‍💻 Project Description
+## 🚀 Live Demo
 
-The Mini Social Media Application is a React-based frontend project that simulates the core features of a social media platform.  
-Users can create posts and view them instantly through React state updates without page reloads.
-
-This project was developed to strengthen skills in **React fundamentals**, **JavaScript**, and **modern frontend workflows**.
+> Coming soon — deployment in progress
 
 ---
 
 ## ✨ Features
 
-- Create and display posts dynamically 📝  
-- Component-based architecture  
-- State management using React Hooks  
-- Responsive and clean UI  
-- Fast rendering with Virtual DOM  
+- 🔐 User registration and login with JWT authentication
+- 📝 Create and delete posts
+- ❤️ Like and comment on posts
+- 👥 Follow and unfollow users
+- 👤 User profile pages
+- 📱 Responsive and clean UI with Tailwind CSS
+- ⚡ Fast rendering with React + Vite
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **React.js** – Frontend framework  
-- **JavaScript (ES6+)** – Logic and interactivity
-- **Express.js** - Backend Logic  
-- **HTML5** – Markup  
-- **CSS3** – Styling  
+| Layer          | Technology                                      |
+| -------------- | ----------------------------------------------- |
+| Frontend       | React.js, JavaScript (ES6+), Tailwind CSS, Vite |
+| Backend        | Node.js, Express.js                             |
+| Database       | MongoDB                                         |
+| Authentication | JWT (JSON Web Tokens)                           |
 
 ---
 
 ## 📂 Project Structure
 
 ```
-├── 📁 Backend
-│   ├── 📁 config
-│   │   └── 📄 db.js
-│   ├── 📁 controller
-│   │   ├── 📁 auth
-│   │   │   └── 📄 auth.js
-│   │   └── 📄 posts.js
-│   ├── 📁 middleware
-│   │   └── 📄 auth.js
-│   ├── 📁 modal
-│   │   ├── 📄 posts-schema.js
-│   │   └── 📄 user-schema.js
-│   ├── 📁 routes
-│   │   ├── 📄 auth.js
-│   │   ├── 📄 posts.js
-│   │   └── 📄 user.js
-│   ├── 📄 app.js
-│   ├── ⚙️ package-lock.json
-│   └── ⚙️ package.json
-├── 📁 Frontend
-│   ├── 📁 public
-│   │   └── 🖼️ vite.svg
-│   ├── 📁 src
-│   │   ├── 📁 assets
-│   │   │   └── 🖼️ react.svg
-│   │   ├── 📁 components
-│   │   │   ├── 🎨 feedpage.css
-│   │   │   ├── 🎨 login.css
-│   │   │   ├── 🎨 profile.css
-│   │   │   └── 🎨 signup.css
-│   │   ├── 📁 pages
-│   │   │   ├── 📄 feedpage.jsx
-│   │   │   ├── 📄 login.jsx
-│   │   │   ├── 📄 profile.jsx
-│   │   │   └── 📄 signup.jsx
-│   │   ├── 🎨 App.css
-│   │   ├── 📄 App.jsx
-│   │   ├── 🎨 index.css
-│   │   └── 📄 main.jsx
-│   ├── ⚙️ .gitignore
-│   ├── 📝 README.md
-│   ├── 📄 eslint.config.js
-│   ├── 🌐 index.html
-│   ├── ⚙️ package-lock.json
-│   ├── ⚙️ package.json
-│   ├── 📄 tailwind.config.js
-│   └── 📄 vite.config.js
-└── 📝 README.md
+mini-social-media/
+├── Backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controller/
+│   │   ├── auth/
+│   │   │   └── auth.js
+│   │   └── posts.js
+│   ├── middleware/
+│   │   └── auth.js
+│   ├── modal/
+│   │   ├── posts-schema.js
+│   │   └── user-schema.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── posts.js
+│   │   └── user.js
+│   ├── app.js
+│   └── package.json
+├── Frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   │   ├── feedpage.jsx
+│   │   │   ├── login.jsx
+│   │   │   ├── profile.jsx
+│   │   │   └── signup.jsx
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
 ```
 
 ---
@@ -92,65 +75,54 @@ This project was developed to strengthen skills in **React fundamentals**, **Jav
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or above)
-- npm or yarn
 
-### Installation
+- Node.js v16+
+- MongoDB (local or Atlas)
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/MuneebHussain52/mini-social-media.git
-   ```
+### Backend Setup
 
-2. Navigate to the project directory
-   ```bash
-   cd mini-social-media
-   ```
+```bash
+cd Backend
+npm install
 
-3. Install dependencies
-   ```bash
-   npm install
-   ```
+# Create .env file
+cp .env.example .env
+# Add your MongoDB URI and JWT secret
 
-4. Start the development server
-   ```bash
-   npm start
-   ```
+npm start
+```
 
-5. Open your browser at
-   ```
-   http://localhost:3000
-   ```
+### Frontend Setup
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+Open your browser at `http://localhost:5173`
 
 ---
 
-## 🎯 Learning Outcomes
+## 🔐 Security
 
-- Understanding React component lifecycle  
-- Using React Hooks (`useState`)  
-- Managing application state  
-- Structuring scalable React projects  
-
----
-
-## 🔮 Future Improvements
-
- 
-- Backend integration (Node.js / Django)   
-- Deployment (Netlify / Vercel)  
+- JWT authentication with protected routes
+- Password hashing with bcrypt
+- Middleware-based route protection
+- Input validation
 
 ---
 
 ## 👨‍💻 Author
 
-**Muneeb Hussain Anjam**  
-Computer Science Undergraduate  
+**Muneeb Hussain Anjam**
 
-- 📧 Email: muneeb525353@gmail.com  
-- 💻 GitHub: https://github.com/your-username  
+- 📧 [muneeb525353@gmail.com](mailto:muneeb525353@gmail.com)
+- 💼 [linkedin.com/in/mhussainn](https://linkedin.com/in/mhussainn)
+- 🐙 [github.com/MuneebHussain52](https://github.com/MuneebHussain52)
 
 ---
 
 ## 📜 License
 
-This project is **open-source** and intended for educational purposes.
+This project is open-source and intended for educational purposes.

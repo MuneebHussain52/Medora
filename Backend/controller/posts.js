@@ -10,7 +10,8 @@ exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate("user", "name");
+      .populate("user", "name _id profilePic")
+      .populate("comments.user", "name _id profilePic");
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching posts", error });
@@ -26,7 +27,7 @@ exports.createpost = async (req, res) => {
     });
     await post.save();
     const populatedPost = await Post.findOne({ _id: post._id }).populate(
-      "user"
+      "user",
     );
 
     res
@@ -41,13 +42,33 @@ exports.createpost = async (req, res) => {
 exports.likepost = async (req, res) => {
   try {
     const { postId } = req.params;
+    const userId = req.user._id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    post.likes = post.likes + 1;
-    await post.save();
-    res.status(200).json({ message: "Post liked successfully" });
+
+    const userIdString = userId.toString();
+    const hasLiked = post.likes.some((id) => id.toString() === userIdString);
+
+    if (hasLiked) {
+      // Unlike the post
+      post.likes = post.likes.filter((id) => id.toString() !== userIdString);
+      await post.save();
+      res
+        .status(200)
+        .json({ message: "Post unliked successfully", liked: false });
+    } else {
+      // Like the post
+      post.likes.push(userId);
+      await post.save();
+      res.status(200).json({ message: "Post liked successfully", liked: true });
+    }
   } catch (error) {
     res.status(500).json({ message: "Error liking post", error });
   }
@@ -73,7 +94,7 @@ exports.commentpost = async (req, res) => {
         },
         $inc: { commentCount: 1 },
       },
-      { new: true }
+      { new: true },
     )
       .populate("user", "name") // post owner
       .populate("comments.user", "name"); // comment authors
@@ -138,7 +159,9 @@ exports.getpost = async (req, res) => {
 exports.getuserpost = async (req, res) => {
   try {
     const { userId } = req.params;
-    const posts = await Post.find({ user: userId });
+    const posts = await Post.find({ user: userId })
+      .populate("user", "name _id profilePic")
+      .populate("comments.user", "name _id profilePic");
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching user posts", error });

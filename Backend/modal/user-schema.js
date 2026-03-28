@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema({
 
   bio: { type: String, default: "" },
   profilePic: { type: String, default: "" },
-  followers: { type: Number, default: 0 },
-  following: { type: Number, default: 0 },
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 module.exports = mongoose.model("User", userSchema);

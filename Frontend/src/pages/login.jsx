@@ -28,7 +28,7 @@ export default function Login() {
         alert("No token received from server");
       }
     } catch (error) {
-      console.error(error);
+      
       alert("Invalid email or password");
     }
   };
