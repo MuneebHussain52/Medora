@@ -1,4 +1,4 @@
-# 📱 Medora
+# 📱 Connectify
 
 > A full-stack MERN social media web application with user authentication, post creation, likes, comments, follow system, and user profiles.
 
