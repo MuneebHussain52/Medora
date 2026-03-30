@@ -12,6 +12,7 @@ app.use(
       "http://localhost:5174",
       "https://medora-guh0bubo5-muneeb525353-2091s-projects.vercel.app",
       "https://medora-git-main-muneeb525353-2091s-projects.vercel.app",
+      /\.vercel\.app$/, // allows ALL vercel.app subdomains
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
