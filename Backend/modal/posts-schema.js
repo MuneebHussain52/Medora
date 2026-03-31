@@ -13,6 +13,7 @@ const postSchema = new mongoose.Schema(
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     commentCount: { type: Number, default: 0 },
     comments: [commentschema],
+    taggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
 
   { timestamps: true },

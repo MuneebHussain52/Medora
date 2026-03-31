@@ -8,9 +8,11 @@ export default function FeedPage() {
   const [posts, setPosts] = useState([]);
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
+  const [tagInput, setTagInput] = useState("");
   const [commentInputs, setCommentInputs] = useState({});
   const [visibleComments, setVisibleComments] = useState({});
   const [likedPosts, setLikedPosts] = useState({});
+  const [savedPosts, setSavedPosts] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [followingUsers, setFollowingUsers] = useState([]);
@@ -50,6 +52,12 @@ export default function FeedPage() {
       setFollowingUsers(
         Array.isArray(res.data.following) ? res.data.following : [],
       );
+      // Build savedPosts map from user data
+      const savedMap = {};
+      if (Array.isArray(res.data.savedPosts)) {
+        res.data.savedPosts.forEach((id) => { savedMap[id] = true; });
+      }
+      setSavedPosts(savedMap);
     } catch (err) {
       console.error("Error fetching current user", err);
       if (err.response?.status === 401) {
@@ -71,16 +79,22 @@ export default function FeedPage() {
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    if (isPosting) return; // prevent double-submit
+    if (isPosting) return;
     setIsPosting(true);
+    // parse @username tags from tagInput
+    const taggedNames = tagInput
+      .split(",")
+      .map((t) => t.trim().replace(/^@/, ""))
+      .filter(Boolean);
     try {
       await axios.post(
         `${API_BASE}/createpost`,
-        { text, image },
+        { text, image, taggedNames },
         { headers: { Authorization: `Bearer ${token}` } },
       );
       setText("");
       setImage("");
+      setTagInput("");
       fetchPosts();
     } catch (err) {
       console.error("Error creating post", err);
@@ -215,6 +229,19 @@ export default function FeedPage() {
     }
   };
 
+  const handleSavePost = async (postId) => {
+    try {
+      const res = await axios.put(
+        `${API_BASE}/savepost/${postId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      setSavedPosts((prev) => ({ ...prev, [postId]: res.data.saved }));
+    } catch (err) {
+      console.error("Error saving post", err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/";
@@ -248,6 +275,12 @@ export default function FeedPage() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="🖼️ Image URL (optional)"
+              />
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                placeholder="🏷️ Tag users by name, comma-separated (optional)"
               />
               <button type="submit" disabled={isPosting}>
                 {isPosting ? "⏳ Posting…" : "📤 Post"}
@@ -326,7 +359,13 @@ export default function FeedPage() {
                     >
                       💬
                     </button>
-                    <button className="action-btn">🔗</button>
+                    <button
+                      className={`action-btn ${savedPosts[post._id] ? "saved" : ""}`}
+                      onClick={() => handleSavePost(post._id)}
+                      title={savedPosts[post._id] ? "Unsave" : "Save"}
+                    >
+                      {savedPosts[post._id] ? "🔖" : "🏷️"}
+                    </button>
                   </div>
 
                   <div className="post-stats">

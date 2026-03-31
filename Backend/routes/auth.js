@@ -7,6 +7,8 @@ const {
   getProfile,
   followUser,
   updateProfile,
+  changePassword,
+  deleteAccount,
 } = require("../controller/auth/auth");
 const authmiddleware = require("../middleware/auth");
 const router = express.Router();
@@ -18,5 +20,7 @@ router.get("/userprofile", authmiddleware, getUserProfile);
 router.get("/getprofile/:userId", getProfile);
 router.post("/followuser/:userId", authmiddleware, followUser);
 router.put("/updateprofile", authmiddleware, updateProfile);
+router.put("/changepassword", authmiddleware, changePassword);
+router.delete("/deleteaccount", authmiddleware, deleteAccount);
 
 module.exports = router;

@@ -20,15 +20,25 @@ exports.getPosts = async (req, res) => {
 
 exports.createpost = async (req, res) => {
   try {
+    const { text, image, taggedNames } = req.body;
+
+    // Resolve tagged user names to IDs
+    let taggedUsers = [];
+    if (Array.isArray(taggedNames) && taggedNames.length > 0) {
+      const foundUsers = await User.find({ name: { $in: taggedNames } }).select("_id");
+      taggedUsers = foundUsers.map((u) => u._id);
+    }
+
     const post = new Post({
       user: req.user._id,
-      text: req.body.text,
-      image: req.body.image,
+      text,
+      image,
+      taggedUsers,
     });
     await post.save();
-    const populatedPost = await Post.findOne({ _id: post._id }).populate(
-      "user",
-    );
+    const populatedPost = await Post.findOne({ _id: post._id })
+      .populate("user")
+      .populate("taggedUsers", "name _id profilePic");
 
     res
       .status(201)
@@ -274,5 +284,61 @@ exports.getprofile = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Error fetching user profile", error });
+  }
+};
+
+// Toggle save/unsave a post
+exports.savepost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const user = await User.findById(userId);
+    const alreadySaved = user.savedPosts.some((id) => id.toString() === postId);
+
+    if (alreadySaved) {
+      user.savedPosts = user.savedPosts.filter((id) => id.toString() !== postId);
+    } else {
+      user.savedPosts.push(postId);
+    }
+    await user.save();
+    res.status(200).json({ saved: !alreadySaved });
+  } catch (error) {
+    res.status(500).json({ message: "Error saving post", error });
+  }
+};
+
+// Get all saved posts of a user
+exports.getsavedposts = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).populate({
+      path: "savedPosts",
+      populate: [
+        { path: "user", select: "name _id profilePic" },
+        { path: "comments.user", select: "name _id profilePic" },
+      ],
+    });
+    res.status(200).json(user.savedPosts.reverse());
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching saved posts", error });
+  }
+};
+
+// Get posts where a user is tagged
+exports.gettaggedposts = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const posts = await Post.find({ taggedUsers: userId })
+      .sort({ createdAt: -1 })
+      .populate("user", "name _id profilePic")
+      .populate("comments.user", "name _id profilePic")
+      .populate("taggedUsers", "name _id profilePic");
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching tagged posts", error });
   }
 };

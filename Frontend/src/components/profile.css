@@ -325,6 +325,7 @@
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 6;
+  line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -627,3 +628,86 @@
 .btn-save:hover {
   background: #1877f2;
 }
+
+/* ── Settings Modal ─────────────────────────────────────────────────────── */
+.settings-modal {
+  max-width: 560px;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #efefef;
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.settings-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #262626;
+  margin: 0 0 16px;
+}
+
+.settings-submit-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.settings-error {
+  color: #e41e3f;
+  font-size: 13px;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.settings-success {
+  color: #0a8f4b;
+  font-size: 13px;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+/* Danger Zone */
+.danger-zone {
+  background: #fff8f8;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #ffd0d0;
+}
+
+.danger-title {
+  color: #e41e3f;
+}
+
+.danger-desc {
+  font-size: 13px;
+  color: #65676b;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.btn-danger {
+  background: #e41e3f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.btn-danger:hover {
+  background: #c0172f;
+  transform: translateY(-1px);
+}
+

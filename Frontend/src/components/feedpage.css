@@ -555,6 +555,10 @@ body {
   color: #e41e3f;
 }
 
+.action-btn.saved {
+  color: #f5a623;
+}
+
 .no-posts-card {
   background: white;
   padding: 60px 20px;
